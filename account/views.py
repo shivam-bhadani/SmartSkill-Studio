@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserRegistrationSerializer, UserLoginSerializer
 
@@ -28,9 +28,8 @@ class UserLoginAPIView(generics.CreateAPIView):
             password = serializer.data.get('password')
             user = authenticate(email=email, password=password)
             if user is None:
-                login(request, user)
                 return Response({
-                    'message': 'Wrong email or password'
+                    'detail': 'Wrong email or password'
                 }, status=status.HTTP_400_BAD_REQUEST)
             
             refresh = RefreshToken.for_user(user)

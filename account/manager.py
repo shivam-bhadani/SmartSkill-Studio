@@ -1,10 +1,8 @@
 from django.contrib.auth.base_user import BaseUserManager
 
 class CustomUserManager(BaseUserManager):
-
     # Custom user model manager with email as the unique identifier
     def create_user(self, first_name, last_name, email, password, **extra_fields):
-
         # Create superuser with the given email and password.
         if not email:
             raise ValueError("The email must be set")
@@ -21,14 +19,11 @@ class CustomUserManager(BaseUserManager):
         return user
     
     def create_superuser(self, first_name, last_name, email, password, **extra_fields):
-
         # Create superuser with the given email and password.
-        extra_fields.setdefault('role', 1)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('role', 1)
 
-        if extra_fields.get('role') != 1:
-            raise ValueError('Superuser must have role of Global Admin')
         if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser has to have is_staff being True")
         if extra_fields.get("is_superuser") is not True:

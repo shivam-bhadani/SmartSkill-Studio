@@ -5,7 +5,8 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from .permissions import (
     IsInstructorOrReadOnly,
     IsInstructorOrReadOnlyEnrolled,
-    IsCourseOwnerOrReadOnly, 
+    IsCourseOwnerOrReadOnly,
+    IsInstructorOrReadOnlyEnrolledObj,
     IsCourseEnrolledOrReadOnly, 
     IsOwnerOrReadOnly
 )
@@ -40,7 +41,7 @@ class CourseReviewListCreateView(generics.ListCreateAPIView):
     
     def perform_create(self, serializer):
         course = get_object_or_404(Course, pk=self.kwargs['course_id'])
-        serializer.save(course=course)
+        serializer.save(course=course, user=self.request.user)
     
 
 class CourseReviewRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -50,10 +51,6 @@ class CourseReviewRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
     def get_queryset(self):
         course = get_object_or_404(Course, pk=self.kwargs['course_id'])
         return CourseReview.objects.filter(course=course)
-    
-    def perform_update(self, serializer):
-        course = get_object_or_404(Course, pk=self.kwargs['course_id'])
-        serializer.save(course=course)
     
 
 class CourseNoticeListCreateView(generics.ListCreateAPIView):
@@ -71,13 +68,10 @@ class CourseNoticeListCreateView(generics.ListCreateAPIView):
 
 class CourseNoticeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CourseNoticeSerializer
-    permission_classes = [IsAuthenticated, IsInstructorOrReadOnly]
+    permission_classes = [IsAuthenticated, IsInstructorOrReadOnlyEnrolledObj]
 
     def get_queryset(self):
         course = get_object_or_404(Course, pk=self.kwargs['course_id'])
         return CourseNotice.objects.filter(course=course)
     
-    def perform_update(self, serializer):
-        course = get_object_or_404(Course, pk=self.kwargs['course_id'])
-        serializer.save(course=course)
 

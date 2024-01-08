@@ -8,14 +8,11 @@ def upload_profile_picture(instance, filename):
     return "profile_picture/{0}".format(filename)
 
 class User(AbstractBaseUser, PermissionsMixin, TimeStampAndUUIModel):
-
     # These fields tie to the roles!
-    ADMIN = 1
-    INSTRUCTOR = 2
-    STUDENT = 3
+    INSTRUCTOR = 1
+    STUDENT = 2
 
     ROLE_CHOICES = (
-        (ADMIN, 'Admin'),
         (INSTRUCTOR, 'Instructor'),
         (STUDENT, 'Student')
     )

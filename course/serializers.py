@@ -6,7 +6,7 @@ class CourseReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseReview
         fields = '__all__'
-        read_only_fields = ['course']
+        read_only_fields = ['course', 'user']
 
 class CourseNoticeSerializer(serializers.ModelSerializer):
     class Meta:
