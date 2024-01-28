@@ -1,6 +1,6 @@
 from django.db import models
-from account.models import User
-from course.models import Course
+from accounts.models import User
+from courses.models import Course
 
 class Enroll(models.Model):
     user = models.ForeignKey(User, related_name='enrolls', on_delete=models.DO_NOTHING)

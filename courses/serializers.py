@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Course, CourseReview, CourseNotice
-from enroll.models import Enroll
+from enrolls.models import Enroll
 
 class CourseReviewSerializer(serializers.ModelSerializer):
     class Meta:

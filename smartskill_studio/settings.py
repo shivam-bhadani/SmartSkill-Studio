@@ -22,10 +22,10 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'rest_framework',
-    'course',
+    'courses',
     'core',
-    'account',
-    'enroll',
+    'accounts',
+    'enrolls',
     'rest_framework_simplejwt',
 
     'django.contrib.admin',
@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

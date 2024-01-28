@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class EnrollConfig(AppConfig):
+class EnrollsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'enroll'
+    name = 'enrolls'

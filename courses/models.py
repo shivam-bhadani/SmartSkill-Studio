@@ -1,6 +1,6 @@
 from django.db import models
 from core.models import TimeStampAndUUIModel
-from account.models import User
+from accounts.models import User
 
 def upload_thumbnail(instance, filename):
     return "user/{0}/course_thumbnail/{1}".format(instance.instructor.id, filename)

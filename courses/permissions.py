@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from enroll.models import Enroll
+from enrolls.models import Enroll
 from django.shortcuts import get_object_or_404
 from .models import Course
 
