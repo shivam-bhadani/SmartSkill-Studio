@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from core.mixins import BaseResponseMixin
 from .permissions import (
     IsInstructorOrReadOnly,
     IsInstructorOrReadOnlyEnrolled,
@@ -14,7 +15,7 @@ from .models import Course, CourseReview, CourseNotice
 from .serializers import CourseSerializer, CourseReviewSerializer, CourseNoticeSerializer
 
 
-class CourseListCreateView(generics.ListCreateAPIView):
+class CourseListCreateView(BaseResponseMixin, generics.ListCreateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     parser_classes = [MultiPartParser, FormParser]
@@ -24,14 +25,14 @@ class CourseListCreateView(generics.ListCreateAPIView):
         serializer.save(instructor=self.request.user)
     
 
-class CourseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class CourseRetrieveUpdateDestroyView(BaseResponseMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer 
     parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticatedOrReadOnly, IsCourseOwnerOrReadOnly]
 
 
-class CourseReviewListCreateView(generics.ListCreateAPIView):
+class CourseReviewListCreateView(BaseResponseMixin, generics.ListCreateAPIView):
     serializer_class = CourseReviewSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsCourseEnrolledOrReadOnly]
 
@@ -44,7 +45,7 @@ class CourseReviewListCreateView(generics.ListCreateAPIView):
         serializer.save(course=course, user=self.request.user)
     
 
-class CourseReviewRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class CourseReviewRetrieveUpdateDestroyView(BaseResponseMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CourseReviewSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
@@ -53,7 +54,7 @@ class CourseReviewRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
         return CourseReview.objects.filter(course=course)
     
 
-class CourseNoticeListCreateView(generics.ListCreateAPIView):
+class CourseNoticeListCreateView(BaseResponseMixin, generics.ListCreateAPIView):
     serializer_class = CourseNoticeSerializer
     permission_classes = [IsAuthenticated, IsInstructorOrReadOnlyEnrolled]
 
@@ -66,7 +67,7 @@ class CourseNoticeListCreateView(generics.ListCreateAPIView):
         serializer.save(course=course)
     
 
-class CourseNoticeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class CourseNoticeRetrieveUpdateDestroyView(BaseResponseMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CourseNoticeSerializer
     permission_classes = [IsAuthenticated, IsInstructorOrReadOnlyEnrolledObj]
 
