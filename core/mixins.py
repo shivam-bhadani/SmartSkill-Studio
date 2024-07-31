@@ -15,10 +15,10 @@ class BaseResponseMixin:
             "data": data
         }, status=http_status)
     
-    def get_error_response(self, err, http_status=status.HTTP_400_BAD_REQUEST):
+    def get_error_response(self, message="Bad Request", http_status=status.HTTP_400_BAD_REQUEST):
         return Response({
             "status": False,
-            "message": err
+            "message": message
         }, status=http_status)
     
     def list(self, request, *args, **kwargs):
@@ -26,7 +26,7 @@ class BaseResponseMixin:
             response = super().list(request, *args, **kwargs)
             return self.get_success_response(response.data)
         except Exception as e:
-            return self.get_error_response(str(e))
+            return self.get_error_response()
         
     def retrieve(self, request, *args, **kwargs):
         try:
@@ -35,7 +35,7 @@ class BaseResponseMixin:
         except ObjectDoesNotExist:
             return self.get_error_response("Object not found", status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return self.get_error_response(str(e))
+            return self.get_error_response()
     
     def create(self, request, *args, **kwargs):
         try:
@@ -44,7 +44,7 @@ class BaseResponseMixin:
         except ObjectDoesNotExist:
             return self.get_error_response("Object not found", status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return self.get_error_response(str(e))
+            return self.get_error_response()
         
     def update(self, request, *args, **kwargs):
         try:
@@ -53,7 +53,7 @@ class BaseResponseMixin:
         except ObjectDoesNotExist:
             return self.get_error_response("Object not found", status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return self.get_error_response(str(e))
+            return self.get_error_response()
     
     def destroy(self, request, *args, **kwargs):
         try:
@@ -62,5 +62,5 @@ class BaseResponseMixin:
         except ObjectDoesNotExist:
             return self.get_error_response("Object not found", status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return self.get_error_response(str(e))
+            return self.get_error_response()
         
