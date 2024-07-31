@@ -2,6 +2,7 @@ from rest_framework import permissions
 from enrolls.models import Enroll
 from django.shortcuts import get_object_or_404
 from .models import Course
+from core.exceptions import *
 
 
 INSTRUCTOR = 1
@@ -12,19 +13,25 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user and obj.user == request.user
+        if request.user and obj.user == request.user:
+            return True
+        raise PermissionDeniedException()
 
 
 class IsInstructor(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role==INSTRUCTOR
+        if request.user.is_authenticated and request.user.role==INSTRUCTOR:
+            return True
+        raise PermissionDeniedException()
 
 
 class IsInstructorOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user.is_authenticated and request.user.role==INSTRUCTOR
+        if request.user.is_authenticated and request.user.role==INSTRUCTOR:
+            return True
+        raise PermissionDeniedException()
     
 
 class IsInstructorOrReadOnlyEnrolled(permissions.BasePermission):
@@ -34,7 +41,9 @@ class IsInstructorOrReadOnlyEnrolled(permissions.BasePermission):
             user = request.user
             if user.is_authenticated and Enroll.objects.filter(user=user, course=course).exists():
                 return True
-        return request.user.is_authenticated and request.user == course.instructor
+        if request.user.is_authenticated and request.user == course.instructor:
+            return True
+        raise PermissionDeniedException()
     
 class IsInstructorOrReadOnlyEnrolledObj(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -43,7 +52,9 @@ class IsInstructorOrReadOnlyEnrolledObj(permissions.BasePermission):
             user = request.user
             if user.is_authenticated and Enroll.objects.filter(user=user, course=course).exists():
                 return True
-        return request.user.is_authenticated and request.user == course.instructors 
+        if request.user.is_authenticated and request.user == course.instructors:
+            return True
+        raise PermissionDeniedException()
 
 
 class IsCourseEnrolledOrReadOnly(permissions.BasePermission):
@@ -51,19 +62,25 @@ class IsCourseEnrolledOrReadOnly(permissions.BasePermission):
         course = get_object_or_404(Course, pk=view.kwargs.get('course_id'))
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user.is_authenticated and Enroll.objects.filter(user=request.user, course=course).exists()
+        if request.user.is_authenticated and Enroll.objects.filter(user=request.user, course=course).exists():
+            return True
+        raise PermissionDeniedException()
 
 
 class IsCourseOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user.is_authenticated and request.user == obj.instructor
+        if request.user.is_authenticated and request.user == obj.instructor:
+            return True
+        raise PermissionDeniedException()
     
 
 class IsCourseOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user.is_authenticated and request.user == obj.instructor
+        if request.user.is_authenticated and request.user == obj.instructor:
+            return True
+        raise PermissionDeniedException()
 
 
 class IsCourseOwnerOrReadOnlyEnrolled(permissions.BasePermission):
@@ -74,4 +91,6 @@ class IsCourseOwnerOrReadOnlyEnrolled(permissions.BasePermission):
             if user.is_authenticated and Enroll.objects.filter(user=user, course=course).exists():
                 return True
         
-        return request.user.is_authenticated and request.user == course.instructor
+        if request.user.is_authenticated and request.user == course.instructor:
+            return True
+        raise PermissionDeniedException()
