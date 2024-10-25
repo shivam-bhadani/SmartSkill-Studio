@@ -14,3 +14,8 @@ class UnauthorizedException(APIException):
 class InternalServerException(APIException):
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
     default_code = "Internal Server Error"
+
+
+class BadRequestException(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_code = "Bad Request"

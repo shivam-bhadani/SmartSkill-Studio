@@ -33,19 +33,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print("Disconnected")
 
     async def receive(self, text_data=None, bytes_data=None):
-        data = json.loads(text_data)
-        message = data['message']
+        try:
+            data = json.loads(text_data)
+            message = data['message']
 
-        await self.save_chat_message(message)
+            await self.save_chat_message(message)
 
-        await self.channel_layer.group_send(
-            self.course_group_name,
-            {
-                'type': 'chat.message',
-                'message': message,
-                'sender': self.user.email
-            }
-        )
+            await self.channel_layer.group_send(
+                self.course_group_name,
+                {
+                    'type': 'chat.message',
+                    'message': message,
+                    'sender': self.user.email
+                }
+            )
+        except Exception as e:
+            await self.send_error_response("An unexpected error occurred.")
     
     async def chat_message(self, event):
         message = event.get('message')
@@ -53,6 +56,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(json.dumps({
             'message': message,
             'sender': sender
+        }))
+
+    async def send_error_response(self, error_message):
+        await self.send(json.dumps({
+            'error': error_message
         }))
 
     @database_sync_to_async
