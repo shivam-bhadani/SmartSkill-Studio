@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Course, CourseReview, CourseNotice
 from enrolls.models import Enroll
+from accounts.models import User
 
 class CourseReviewSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,8 +15,14 @@ class CourseNoticeSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['course']
 
+class CourseInstructorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "first_name", "last_name"]
+
 class CourseSerializer(serializers.ModelSerializer):
     enrolled = serializers.SerializerMethodField()
+    instructor = CourseInstructorSerializer(read_only=True)
     class Meta:
         model = Course
         fields = '__all__'
