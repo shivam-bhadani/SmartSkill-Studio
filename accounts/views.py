@@ -19,7 +19,7 @@ class UserRegistrationAPIView(BaseResponseMixin, generics.CreateAPIView):
             }
             return self.get_success_response(user_data, status.HTTP_201_CREATED)
         
-        return self.get_error_response(serializer.errors)
+        return self.get_error_response()
     
 
 class UserLoginAPIView(BaseResponseMixin, generics.CreateAPIView):
@@ -40,4 +40,4 @@ class UserLoginAPIView(BaseResponseMixin, generics.CreateAPIView):
                 'access': str(refresh.access_token)
             }, status.HTTP_200_OK)
         
-        return self.get_error_response(serializer.errors)
+        return self.get_error_response()

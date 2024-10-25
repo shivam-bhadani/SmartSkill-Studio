@@ -1,6 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.response import Response
+from .exceptions import InternalServerException
 
 class BaseResponseMixin:
     def get_success_response_no_content(self, http_status=status.HTTP_204_NO_CONTENT):
@@ -26,7 +27,7 @@ class BaseResponseMixin:
             response = super().list(request, *args, **kwargs)
             return self.get_success_response(response.data)
         except Exception as e:
-            return self.get_error_response()
+            raise InternalServerException()
         
     def retrieve(self, request, *args, **kwargs):
         try:
@@ -35,7 +36,7 @@ class BaseResponseMixin:
         except ObjectDoesNotExist:
             return self.get_error_response("Object not found", status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return self.get_error_response()
+            raise InternalServerException()
     
     def create(self, request, *args, **kwargs):
         try:
@@ -44,7 +45,7 @@ class BaseResponseMixin:
         except ObjectDoesNotExist:
             return self.get_error_response("Object not found", status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return self.get_error_response()
+            raise InternalServerException()
         
     def update(self, request, *args, **kwargs):
         try:
@@ -53,7 +54,7 @@ class BaseResponseMixin:
         except ObjectDoesNotExist:
             return self.get_error_response("Object not found", status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return self.get_error_response()
+            raise InternalServerException()
     
     def destroy(self, request, *args, **kwargs):
         try:
@@ -62,5 +63,5 @@ class BaseResponseMixin:
         except ObjectDoesNotExist:
             return self.get_error_response("Object not found", status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return self.get_error_response()
+            raise InternalServerException()
         
