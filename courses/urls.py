@@ -1,12 +1,5 @@
 from django.urls import path
-from .views import (
-    CourseListCreateView,
-    CourseRetrieveUpdateDestroyView,
-    CourseReviewListCreateView,
-    CourseReviewRetrieveUpdateDestroyView,
-    CourseNoticeListCreateView,
-    CourseNoticeRetrieveUpdateDestroyView
-)
+from .views import *
 
 urlpatterns = [
     path('', CourseListCreateView.as_view(), name='course_list_create'),
@@ -17,4 +10,7 @@ urlpatterns = [
 
     path('<int:course_id>/notices/', CourseNoticeListCreateView.as_view(), name='course_notice_list_create'),
     path('<int:course_id>/notices/<int:pk>/', CourseNoticeRetrieveUpdateDestroyView.as_view(), name='course_notice_detail'),
+
+    path('thumbnail/uploadSignedUrl/', CourseThumbnailUploadPresignedURLCreateView.as_view(), name='course_upload_thumbnail_presigned_url_create'),
+    path('thumbnail/viewSignedUrl/', CourseThumbnailViewPresignedURLCreateView.as_view(), name='course_view_thumbnail_presigned_url_create'),   
 ]

@@ -82,7 +82,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
             if auth_header.startswith('Bearer '):
                 token = auth_header.split('Bearer ')[1]
-                payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+                payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=['HS256'])
                 user_id = payload['user_id']
                 user  = User.objects.get(pk=user_id)
                 return user

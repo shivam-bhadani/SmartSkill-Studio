@@ -1,7 +1,11 @@
+import uuid
+from decouple import config
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from core.s3 import S3
+from core.exceptions import BadRequestException
 from core.mixins import BaseResponseMixin
 from .permissions import (
     IsInstructorOrReadOnly,
@@ -76,3 +80,38 @@ class CourseNoticeRetrieveUpdateDestroyView(BaseResponseMixin, generics.Retrieve
         return CourseNotice.objects.filter(course=course)
     
 
+class CourseThumbnailUploadPresignedURLCreateView(BaseResponseMixin, generics.CreateAPIView):
+    s3 = S3(config('AWS_ACCESS_KEY_ID'), config('AWS_SECRET_ACCESS_KEY'), config('AWS_S3_REGION_NAME'))
+    def create(self, request, *args, **kwargs):
+        try:
+            bucket = config('AWS_S3_BUCKET_NAME')
+            request_body = request.data
+            file_name = request_body.get('file_name', None)
+            file_type = request_body.get('file_type', None)
+            if file_name is None or file_type not in ["image/jpeg", "image/png"]:
+                raise BadRequestException()
+            unique_image_name = f"course_thumbnail/{uuid.uuid4()}_{file_name}"
+            presigned_url = self.s3.generate_upload_presigned_url(unique_image_name, file_type, bucket)
+            return self.get_success_response({
+                'url': presigned_url, 
+                'file_name': unique_image_name
+            })
+        except Exception as e:
+            raise BadRequestException()
+
+
+class CourseThumbnailViewPresignedURLCreateView(BaseResponseMixin, generics.CreateAPIView):
+    s3 = S3(config('AWS_ACCESS_KEY_ID'), config('AWS_SECRET_ACCESS_KEY'), config('AWS_S3_REGION_NAME'))
+    def create(self, request, *args, **kwargs):
+        try:
+            bucket = config('AWS_S3_BUCKET_NAME')
+            request_body = request.data
+            file_key = request_body.get('file_key', None)
+            if file_key is None:
+                raise BadRequestException()
+            presigned_url = self.s3.generate_read_presigned_url(file_key, bucket)
+            return self.get_success_response({
+                'url': presigned_url
+            })
+        except Exception as e:
+            raise BadRequestException()
