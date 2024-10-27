@@ -7,14 +7,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from core.s3 import S3
 from core.exceptions import BadRequestException
 from core.mixins import BaseResponseMixin
-from .permissions import (
-    IsInstructorOrReadOnly,
-    IsInstructorOrReadOnlyEnrolled,
-    IsCourseOwnerOrReadOnly,
-    IsInstructorOrReadOnlyEnrolledObj,
-    IsCourseEnrolledOrReadOnly, 
-    IsOwnerOrReadOnly
-)
+from .permissions import *
 from .models import Course, CourseReview, CourseNotice
 from .serializers import CourseSerializer, CourseReviewSerializer, CourseNoticeSerializer
 
