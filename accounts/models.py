@@ -18,7 +18,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampAndUUIModel):
     )
 
     username = None
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, db_index=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     profile_picture = models.ImageField(upload_to=upload_profile_picture, null=True, blank=True, default='default_profile_picture.png')
