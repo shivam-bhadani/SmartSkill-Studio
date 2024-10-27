@@ -1,15 +1,20 @@
 from rest_framework import generics
-from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from core.mixins import BaseResponseMixin
 from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from .models import User
 
 class UserRegistrationAPIView(BaseResponseMixin, generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
 
     def create(self, request, *args, **kwargs):
+        email = request.data.get("email", None)
+        if email is None:
+            return self.get_error_response()
+        if User.objects.filter(email=email).exists():
+            return self.get_error_response("User with this email already exists")
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()

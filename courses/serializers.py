@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Course, CourseReview, CourseNotice
+from .models import *
 from enrolls.models import Enroll
 from accounts.models import User
 
@@ -8,6 +8,12 @@ class CourseReviewSerializer(serializers.ModelSerializer):
         model = CourseReview
         fields = '__all__'
         read_only_fields = ['course', 'user']
+
+class CourseThumbnailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseThumbnail
+        fields = '__all__'
+        read_only_fields = ['course']
 
 class CourseNoticeSerializer(serializers.ModelSerializer):
     class Meta:
